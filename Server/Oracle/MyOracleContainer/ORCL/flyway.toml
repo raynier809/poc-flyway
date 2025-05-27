@@ -1,0 +1,44 @@
+# -----------------------------------------------------------------------
+# Flyway config para Oracle (Dev environment)
+# Ubicación del archivo:
+# repo-root/dev/Server/Oracle/MyOracleContainer/ORCL/flyway.toml
+# -----------------------------------------------------------------------
+
+# Conexión JDBC
+# Asumiendo que el contenedor expone ORCL en el puerto 1521
+flyway.url = "jdbc:oracle:thin:@//oracle-dev:1521/ORCL"
+
+# Credenciales en Jenkins Credentials
+flyway.user = "${FLYWAY_ORACLE_USER}"
+flyway.password = "${FLYWAY_ORACLE_PASSWORD}"
+
+# Ubicaciones de los scripts
+flyway.locations = [
+  "filesystem:tables",
+  "filesystem:views",
+  "filesystem:procedures",
+  "filesystem:functions"
+]
+
+# Prefijos y sufijos
+flyway.sqlMigrationPrefix = "V"
+flyway.undoSqlMigrationPrefix = "U"
+flyway.sqlMigrationSeparator = "__"
+flyway.sqlMigrationSuffixes = [".sql"]
+
+# Esquema de trabajo
+# Si usas un esquema específico (por ejemplo, APP_SCHEMA), especifícalo:
+flyway.schemas = ["APP_SCHEMA"]
+
+# Enterprise features
+flyway.driftReport = true
+flyway.driftReportFormat = "html"
+flyway.undoEnabled = true
+flyway.validateOnMigrate = true
+flyway.cleanDisabled = true
+flyway.allowMixedMigrations = false
+flyway.repairOnValidationError = true
+
+# Archivo de salida de logs (para archivar en Jenkins)
+flyway.outputFile = "flyway-output.log"
+flyway.oracle.sqlplus = false
