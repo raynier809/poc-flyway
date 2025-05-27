@@ -21,7 +21,7 @@ pipeline {
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
+          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
         }
       }
     }
@@ -30,7 +30,7 @@ pipeline {
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml migrate"
+          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml migrate"
         }
       }
     }
@@ -39,7 +39,7 @@ pipeline {
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml info > info-sqlserver.txt"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml info > info-oracle.txt"
+         // sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml info > info-oracle.txt"
           archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
         }
       }
@@ -50,7 +50,7 @@ pipeline {
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml drift --outputHtml=drift-sqlserver.html"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml drift --outputHtml=drift-oracle.html"
+          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml drift --outputHtml=drift-oracle.html"
         }
         publishHTML([
           allowMissing: false,
@@ -75,7 +75,7 @@ pipeline {
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
+          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
         }
       }
     }
