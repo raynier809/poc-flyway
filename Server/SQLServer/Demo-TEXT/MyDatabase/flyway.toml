@@ -1,7 +1,6 @@
 # -----------------------------------------------------------------------
-# Flyway config para SQL Server (Dev environment)
-# Ubicación del archivo:
-# repo-root/dev/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml
+# flyway.toml
+# Configuración común a todos los entornos
 # -----------------------------------------------------------------------
 
 
@@ -12,22 +11,28 @@ locations = [
   "filesystem:./functions"
 ]
 
-# Prefijos y sufijos de archivos
-flyway.sqlMigrationPrefix = "V"
-flyway.undoSqlMigrationPrefix = "U"
-flyway.sqlMigrationSeparator = "__"
-flyway.sqlMigrationSuffixes = [".sql"]
+# Conexión y credenciales (genéricas; se pueden sobreescribir en entornos)
+url                   = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;encrypt=true;trustServerCertificate=true"
+user                  = "${FLYWAY_SQLSERVER_USER}"
+password              = "${FLYWAY_SQLSERVER_PASSWORD}"
+driver                = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+schemas               = ["dbo"]
+defaultSchema         = "dbo"
 
-# Esquema de metadatos (puede ser distinto del esquema de objetos)
-flyway.schemas = ["dbo"]
+# Convenciones de nombres
+sqlMigrationPrefix      = "V"
+undoSqlMigrationPrefix = "U"
+sqlMigrationSeparator   = "__"
+sqlMigrationSuffixes    = [".sql"]
 
-# Enterprise features
-# Generar reporte HTML de drift cada vez que se ejecute flyway drift
-flyway.driftReport = true
-flyway.driftReportFormat = "html"
-
-# Habilitar undo (solo si existen scripts U*)
-flyway.undoEnabled = true
+# Validaciones y Enterprise features
+undoEnabled           = true
+validateOnMigrate     = true
+cleanDisabled         = true
+allowMixedMigrations  = false
+driftReport           = true
+driftReportFormat     = "html"
+repairOnValidationError = true
 
 # Salida de logs
 outputFile            = "flyway-output.log"
@@ -38,7 +43,7 @@ teamcity              = false
 # -----------------------------------------------------------------------
 
 [environments.development]
-url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MAIN_db;encrypt=true;trustServerCertificate=true"
+url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=QA_db;encrypt=true;trustServerCertificate=true"
 user      = "dev_user"
 password  = "Dev123456789!"
 schemas   = ["dbo"]
@@ -47,8 +52,7 @@ locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedur
 
 
 [environments.production]
-url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
+url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=PRD_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
 schemas  = ["dbo"]
 [environments.production.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures","filesystem:./functions"]
-

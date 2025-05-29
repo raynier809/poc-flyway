@@ -1,13 +1,13 @@
 pipeline {
-  agent any
+  agent { label 'windows-agent' }
 
   environment {
     // Credenciales Flyway y BBDD
     FLYWAY_LICENSE_KEY        = credentials('flyway-license-key')
     FLYWAY_SQLSERVER_USER     = credentials('jenkins-sqlserver-user')
     FLYWAY_SQLSERVER_PASSWORD = credentials('jenkins-sqlserver-pass')
-    FLYWAY_ORACLE_USER        = credentials('jenkins-oracle-user')
-    FLYWAY_ORACLE_PASSWORD    = credentials('jenkins-oracle-pass')
+    //FLYWAY_ORACLE_USER        = credentials('jenkins-oracle-user')
+    //FLYWAY_ORACLE_PASSWORD    = credentials('jenkins-oracle-pass')
   }
 
   stages {
@@ -19,20 +19,19 @@ pipeline {
 
     stage('Flyway Validate') {
       steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
-        }
+        bat """        
+        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate
+        """
       }
     }
 
     stage('Flyway Migrate') {
       when { branch 'QA' }
       steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml migrate"
-        }
+        bat """
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml migrate
+        """
       }
     }
 
@@ -49,10 +48,10 @@ pipeline {
     stage('Flyway Drift Report') {
       when { branch 'DEV|QA' }
       steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml drift --outputHtml=drift-sqlserver.html"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml drift --outputHtml=drift-oracle.html"
-        }
+        bat """
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml drift --outputHtml=drift-sqlserver.html
+        """
         publishHTML([
           allowMissing: false,
           alwaysLinkToLastBuild: true,
@@ -74,10 +73,10 @@ pipeline {
     stage('Post-Migrate Validation') {
       when { branch 'QA|PRD' }
       steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
-        }
+        bat """
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml validate
+        """
       }
     }
   }
@@ -85,11 +84,6 @@ pipeline {
   post {
     always {
       cleanWs()
-    }
-    failure {
-      mail to: 'raynieradames@gmail.com',
-           subject: "Build failed in ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-           body: "Revisar consola: ${env.BUILD_URL}"
     }
   }
 }
