@@ -5,10 +5,10 @@
 
 
 locations = [
-  "filesystem:tables",
-  "filesystem:views", 
-  "filesystem:procedures",
-  "filesystem:functions"
+  "filesystem:./tables",
+  "filesystem:./views", 
+  "filesystem:./procedures",
+  "filesystem:./functions"
 ]
 
 # Conexión y credenciales (genéricas; se pueden sobreescribir en entornos)
@@ -43,18 +43,17 @@ teamcity              = false
 # -----------------------------------------------------------------------
 
 [environments.development]
-url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;encrypt=true;trustServerCertificate=true"
+url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MAIN_db;encrypt=true;trustServerCertificate=true"
 user      = "dev_user"
 password  = "Dev123456789!"
 schemas   = ["dbo"]
 [environments.development.flyway]
-locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures"]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
 
 
 [environments.production]
-url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=QA_db;encrypt=true;trustServerCertificate=true"
-user     = "${FLYWAY_SQLSERVER_USER}"
-password = "${FLYWAY_SQLSERVER_PASSWORD}"
+url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
 schemas  = ["dbo"]
 [environments.production.flyway]
-locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures"]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures","filesystem:./functions"]
+
