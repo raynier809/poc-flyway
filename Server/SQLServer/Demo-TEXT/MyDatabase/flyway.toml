@@ -43,7 +43,7 @@ teamcity              = false
 # -----------------------------------------------------------------------
 
 [environments.development]
-url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MAIN_db;encrypt=true;trustServerCertificate=true"
+url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;encrypt=true;trustServerCertificate=true"
 user      = "dev_user"
 password  = "Dev123456789!"
 schemas   = ["dbo"]
@@ -52,7 +52,7 @@ locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedur
 
 
 [environments.production]
-url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
+url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=QA_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
 schemas  = ["dbo"]
 [environments.production.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures","filesystem:./functions"]
