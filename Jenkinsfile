@@ -6,7 +6,7 @@ pipeline {
             steps {
                 bat '''
                 cd C:\\Conexio
-                echo Archivo creado por Jenkins > conn.txt
+                echo Archivos creado por Jenkins > conn.txt
                 '''
             }
         }
