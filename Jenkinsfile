@@ -18,7 +18,7 @@ pipeline {
                     echo "Ejecutando deployment en rama DEV"
                     
                     // Conectar al servidor Windows y ejecutar comando
-                    withCredentials([usernamePassword(credentialsId: 'windows-server-creds', 
+                    withCredentials([usernamePassword(credentialsId: 'tu_usuario_windows', 
                                                     usernameVariable: 'WIN_USER', 
                                                     passwordVariable: 'WIN_PASS')]) {
                         
