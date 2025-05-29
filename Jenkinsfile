@@ -1,94 +1,83 @@
 pipeline {
-  agent any
-
-  environment {
-    // Credenciales Flyway y BBDD
-    FLYWAY_LICENSE_KEY        = credentials('flyway-license-key')
-    FLYWAY_SQLSERVER_USER     = credentials('jenkins-sqlserver-user')
-    FLYWAY_SQLSERVER_PASSWORD = credentials('jenkins-sqlserver-pass')
-    FLYWAY_ORACLE_USER        = credentials('jenkins-oracle-user')
-    FLYWAY_ORACLE_PASSWORD    = credentials('jenkins-oracle-pass')
-  }
-
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-      }
-    }
-
-    stage('Flyway Validate') {
-      steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
+    agent any
+    
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Branch actual: ${env.BRANCH_NAME}"
+                echo "Commit: ${env.GIT_COMMIT}"
+            }
         }
-      }
-    }
+        
+        stage('Deploy to Dev') {
+            when {
+                branch 'dev'
+            }
+            steps {
+                script {
+                    echo "Ejecutando deployment en rama DEV"
+                    
+                    // Conectar al servidor Windows y ejecutar comando
+                    withCredentials([usernamePassword(credentialsId: 'windows-server-creds', 
+                                                    usernameVariable: 'WIN_USER', 
+                                                    passwordVariable: 'WIN_PASS')]) {
+                        
+                        // Opción 1: Usando PowerShell remoto (recomendado)
+                        bat """
+                        powershell -Command "
+                            \$securePassword = ConvertTo-SecureString '${WIN_PASS}' -AsPlainText -Force;
+                            \$credential = New-Object System.Management.Automation.PSCredential('${WIN_USER}', \$securePassword);
+                            Invoke-Command -ComputerName 155.248.227.97 -Credential \$credential -ScriptBlock {
+                                New-Item -Path 'C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase' -ItemType Directory -Force;
+                                Set-Content -Path 'C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\jenkins.txt' -Value 'Jenkins estuvo aqui...' -Encoding UTF8;
+                                Write-Host 'Archivo jenkins.txt creado exitosamente';
+                            }
+                        "
+                        """
+                        
+                        // Opción 2: Usando PsExec (alternativa)
+                        // Necesitas tener PsExec en el servidor Jenkins
+                        /*
+                        bat """
+                        psexec \\\\155.248.227.97 -u ${WIN_USER} -p ${WIN_PASS} -accepteula cmd /c "
+                        if not exist C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase mkdir C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase &&
+                        echo Jenkins estuvo aqui... > C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\jenkins.txt
+                        "
+                        """Set-Item WSMan:\localhost\Client\TrustedHosts -Value "155.248.227.97" -Force
 
-    stage('Flyway Migrate') {
-      steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate"
-          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml migrate"
+                        */
+                    }
+                }
+            }
         }
-      }
-    }
-
-    stage('Flyway Info') {
-      steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml info > info-sqlserver.txt"
-         // sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml info > info-oracle.txt"
-          archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
+        
+        stage('Deploy to QA') {
+            when {
+                branch 'qa'
+            }
+            steps {
+                echo "Ejecutando deployment en rama QA"
+                // Aquí puedes agregar lógica específica para QA
+            }
         }
-      }
-    }
-
-    stage('Flyway Drift Report') {
-      when { branch 'dev|qa' }
-      steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml drift --outputHtml=drift-sqlserver.html"
-          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml drift --outputHtml=drift-oracle.html"
+        
+        stage('Deploy to PRD') {
+            when {
+                branch 'prd'
+            }
+            steps {
+                echo "Ejecutando deployment en rama PRD"
+                // Aquí puedes agregar lógica específica para PRD
+            }
         }
-        publishHTML([
-          allowMissing: false,
-          alwaysLinkToLastBuild: true,
-          keepAll: true,
-          reportDir: '.',
-          reportFiles: 'drift-*.html',
-          reportName: "Drift Report (${env.BRANCH_NAME})"
-        ])
-      }
     }
-
-    stage('Approval Gate') {
-      when { branch 'qa|prod' }
-      steps {
-        input message: "Approve deployment to ${env.BRANCH_NAME}?", ok: 'Deploy'
-      }
-    }
-
-    stage('Post-Migrate Validation') {
-      when { branch 'qa|prod' }
-      steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
-          //sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate"
+    
+    post {
+        success {
+            echo "Pipeline ejecutado exitosamente para la rama ${env.BRANCH_NAME}"
         }
-      }
+        failure {
+            echo "Pipeline falló para la rama ${env.BRANCH_NAME}"
+        }
     }
-  }
-
-  post {
-    always {
-      cleanWs()
-    }
-    failure {
-      mail to: 'raynieradames@gmail.com',
-           subject: "Build failed in ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-           body: "Revisar consola: ${env.BUILD_URL}"
-    }
-  }
 }
