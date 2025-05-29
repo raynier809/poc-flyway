@@ -6,7 +6,7 @@ pipeline {
             steps {
                 bat '''
                 cd C:\\Conexio
-                echo Conexion exitosa > conn.txt
+                echo Conexion exitosa, ahora? > conn.txt
                 '''
             }
         }
