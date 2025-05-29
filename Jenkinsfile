@@ -27,6 +27,7 @@ pipeline {
     }
 
     stage('Flyway Migrate') {
+      when { branch 'QA' }
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate"
@@ -46,7 +47,7 @@ pipeline {
     }
 
     stage('Flyway Drift Report') {
-      when { branch 'dev|qa' }
+      when { branch 'DEV|QA' }
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml drift --outputHtml=drift-sqlserver.html"
@@ -64,14 +65,14 @@ pipeline {
     }
 
     stage('Approval Gate') {
-      when { branch 'qa|prod' }
+      when { branch 'QA|PRD' }
       steps {
         input message: "Approve deployment to ${env.BRANCH_NAME}?", ok: 'Deploy'
       }
     }
 
     stage('Post-Migrate Validation') {
-      when { branch 'qa|prod' }
+      when { branch 'QA|PRD' }
       steps {
         script {
           sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate"
