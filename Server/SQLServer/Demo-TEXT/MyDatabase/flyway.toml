@@ -1,49 +1,60 @@
 # -----------------------------------------------------------------------
-# Flyway config para SQL Server (Dev environment)
-# Ubicación del archivo:
-# repo-root/dev/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml
+# flyway.toml
+# Configuración común a todos los entornos
 # -----------------------------------------------------------------------
 
-# Conexión JDBC
-flyway.url = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MyDatabase"
 
-# Credenciales (mejor guardarlas en Jenkins Credentials y referenciarlas aquí)
-flyway.user = "${FLYWAY_SQLSERVER_USER}"
-flyway.password = "${FLYWAY_SQLSERVER_PASSWORD}"
-
-# Ubicaciones de los scripts (relativas al directorio de flyway.toml)
-flyway.locations = [
+locations = [
   "filesystem:tables",
-  "filesystem:views",
+  "filesystem:views", 
   "filesystem:procedures",
   "filesystem:functions"
 ]
 
-# Prefijos y sufijos de archivos
-flyway.sqlMigrationPrefix = "V"
-flyway.undoSqlMigrationPrefix = "U"
-flyway.sqlMigrationSeparator = "__"
-flyway.sqlMigrationSuffixes = [".sql"]
+# Conexión y credenciales (genéricas; se pueden sobreescribir en entornos)
+url                   = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;encrypt=true;trustServerCertificate=true"
+user                  = "${FLYWAY_SQLSERVER_USER}"
+password              = "${FLYWAY_SQLSERVER_PASSWORD}"
+driver                = "com.microsoft.sqlserver.jdbc.SQLServerDriver"
+schemas               = ["dbo"]
+defaultSchema         = "dbo"
 
-# Esquema de metadatos (puede ser distinto del esquema de objetos)
-flyway.schemas = ["dbo"]
+# Convenciones de nombres
+sqlMigrationPrefix      = "V"
+undoSqlMigrationPrefix = "U"
+sqlMigrationSeparator   = "__"
+sqlMigrationSuffixes    = [".sql"]
 
-# Enterprise features
-# Generar reporte HTML de drift cada vez que se ejecute flyway drift
-flyway.driftReport = true
-flyway.driftReportFormat = "html"
+# Validaciones y Enterprise features
+undoEnabled           = true
+validateOnMigrate     = true
+cleanDisabled         = true
+allowMixedMigrations  = false
+driftReport           = true
+driftReportFormat     = "html"
+repairOnValidationError = true
 
-# Habilitar undo (solo si existen scripts U*)
-flyway.undoEnabled = true
+# Salida de logs
+outputFile            = "flyway-output.log"
+teamcity              = false
 
-# Validación de checksum antes de migrar
-flyway.validateOnMigrate = true
+# -----------------------------------------------------------------------
+# Entornos específicos
+# -----------------------------------------------------------------------
 
-# Permitir reparar automáticamente los metadatos si cambia un checksum
-flyway.cleanDisabled = true
-flyway.allowMixedMigrations = false
-flyway.repairOnValidationError = true
+[environments.development]
+url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;encrypt=true;trustServerCertificate=true"
+user      = "dev_user"
+password  = "Dev123456789!"
+schemas   = ["dbo"]
+[environments.development.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures"]
 
-# Directivas de logging/output (útil para archivar logs en Jenkins)
-flyway.outputFile = "flyway-output.log"
-flyway.teamcity = false
+
+[environments.production]
+url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=QA_db;encrypt=true;trustServerCertificate=true"
+user     = "${FLYWAY_SQLSERVER_USER}"
+password = "${FLYWAY_SQLSERVER_PASSWORD}"
+schemas  = ["dbo"]
+[environments.production.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures"]
