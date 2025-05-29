@@ -40,7 +40,7 @@ pipeline {
         cd Server/SQLServer/Demo-TEXT/MyDatabase
         flyway -environment=production -configFiles=./flyway.toml info > info-sqlserver.txt
         """
-        archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
+        archiveArtifacts artifacts: 'Server/SQLServer/Demo-TEXT/MyDatabase/info-*.txt', onlyIfSuccessful: true
       }
     }
 
