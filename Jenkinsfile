@@ -38,11 +38,11 @@ pipeline {
 
     stage('Flyway Info') {
       steps {
-        script {
-          sh "flyway -c ${env.BRANCH_NAME}/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml info > info-sqlserver.txt"
-          sh "flyway -c ${env.BRANCH_NAME}/Server/Oracle/MyOracleContainer/ORCL/flyway.toml info > info-oracle.txt"
-          archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
-        }
+        bat """
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml info > info-sqlserver.txt
+        """
+        archiveArtifacts artifacts: 'Server/SQLServer/Demo-TEXT/MyDatabase/info-*.txt', onlyIfSuccessful: true
       }
     }
 

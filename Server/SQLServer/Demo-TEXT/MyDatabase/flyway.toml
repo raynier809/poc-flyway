@@ -4,19 +4,12 @@
 # repo-root/dev/Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml
 # -----------------------------------------------------------------------
 
-# Conexión JDBC
-flyway.url = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MyDatabase"
 
-# Credenciales (mejor guardarlas en Jenkins Credentials y referenciarlas aquí)
-flyway.user = "${FLYWAY_SQLSERVER_USER}"
-flyway.password = "${FLYWAY_SQLSERVER_PASSWORD}"
-
-# Ubicaciones de los scripts (relativas al directorio de flyway.toml)
-flyway.locations = [
-  "filesystem:tables",
-  "filesystem:views",
-  "filesystem:procedures",
-  "filesystem:functions"
+locations = [
+  "filesystem:./tables",
+  "filesystem:./views", 
+  "filesystem:./procedures",
+  "filesystem:./functions"
 ]
 
 # Prefijos y sufijos de archivos
@@ -36,14 +29,26 @@ flyway.driftReportFormat = "html"
 # Habilitar undo (solo si existen scripts U*)
 flyway.undoEnabled = true
 
-# Validación de checksum antes de migrar
-flyway.validateOnMigrate = true
+# Salida de logs
+outputFile            = "flyway-output.log"
+teamcity              = false
 
-# Permitir reparar automáticamente los metadatos si cambia un checksum
-flyway.cleanDisabled = true
-flyway.allowMixedMigrations = false
-flyway.repairOnValidationError = true
+# -----------------------------------------------------------------------
+# Entornos específicos
+# -----------------------------------------------------------------------
 
-# Directivas de logging/output (útil para archivar logs en Jenkins)
-flyway.outputFile = "flyway-output.log"
-flyway.teamcity = false
+[environments.development]
+url       = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=MAIN_db;encrypt=true;trustServerCertificate=true"
+user      = "dev_user"
+password  = "Dev123456789!"
+schemas   = ["dbo"]
+[environments.development.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
+
+
+[environments.production]
+url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
+schemas  = ["dbo"]
+[environments.production.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures","filesystem:./functions"]
+
