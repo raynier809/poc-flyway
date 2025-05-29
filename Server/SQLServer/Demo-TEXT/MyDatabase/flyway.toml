@@ -53,8 +53,8 @@ locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedur
 
 [environments.production]
 url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=QA_db;encrypt=true;trustServerCertificate=true"
-user     = "${FLYWAY_SQLSERVER_USER}"
-password = "${FLYWAY_SQLSERVER_PASSWORD}"
+user     = "flyway_admin"
+password = "Admin123465789!"
 schemas  = ["dbo"]
 [environments.production.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures"]

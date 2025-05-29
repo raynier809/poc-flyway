@@ -28,7 +28,8 @@ pipeline {
     stage('Flyway Migrate') {
       steps {
         bat """
-        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml migrate
         """
       }
     }
@@ -36,7 +37,8 @@ pipeline {
     stage('Flyway Info') {
       steps {
         bat """
-        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml info > info-sqlserver.txt
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml info > info-sqlserver.txt
         """
         archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
       }
