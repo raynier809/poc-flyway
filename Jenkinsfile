@@ -48,8 +48,8 @@ pipeline {
       when { branch 'dev|qa' }
       steps {
         bat """
-        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        flyway -environment=production drift --outputHtml=drift-sqlserver.html
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml drift --outputHtml=drift-sqlserver.html
         """
         publishHTML([
           allowMissing: false,
@@ -73,8 +73,8 @@ pipeline {
       when { branch 'qa|prod' }
       steps {
         bat """
-        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        flyway -environment=production validate
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        flyway -environment=production -configFiles=./flyway.toml validate
         """
       }
     }
