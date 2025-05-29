@@ -1,12 +1,12 @@
 pipeline {
-    agent { label 'windows' }
+    agent { label 'windows-agent' }
 
     stages {
         stage('Crear archivo en Windows') {
             steps {
                 bat '''
                 cd C:\\Conexio
-                echo Archivos creado por Jenkins > conn.txt
+                echo Conexion exitosa > conn.txt
                 '''
             }
         }
