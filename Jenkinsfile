@@ -36,7 +36,8 @@ pipeline {
     stage('Flyway Info') {
       steps {
         bat """
-        flyway -c ${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml info > info-sqlserver.txt
+        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
+        flyway -environment=production info > info-sqlserver.txt
         """
         archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
       }
@@ -46,7 +47,8 @@ pipeline {
       when { branch 'dev|qa' }
       steps {
         bat """
-        flyway -c ${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml drift --outputHtml=drift-sqlserver.html
+        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
+        flyway -environment=production drift --outputHtml=drift-sqlserver.html
         """
         publishHTML([
           allowMissing: false,
@@ -70,7 +72,8 @@ pipeline {
       when { branch 'qa|prod' }
       steps {
         bat """
-        flyway -c ${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml validate
+        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
+        flyway -environment=production validate
         """
       }
     }
