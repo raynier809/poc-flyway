@@ -26,7 +26,7 @@ pipeline {
     }
 
     stage('Flyway Migrate') {
-      when { branch 'QA' }
+      when { branch 'PRD' }
       steps {
         bat """
         cd Server/SQLServer/Demo-TEXT/MyDatabase
