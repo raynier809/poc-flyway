@@ -6,8 +6,8 @@ pipeline {
     FLYWAY_LICENSE_KEY        = credentials('flyway-license-key')
     FLYWAY_SQLSERVER_USER     = credentials('jenkins-sqlserver-user')
     FLYWAY_SQLSERVER_PASSWORD = credentials('jenkins-sqlserver-pass')
-    FLYWAY_ORACLE_USER        = credentials('jenkins-oracle-user')
-    FLYWAY_ORACLE_PASSWORD    = credentials('jenkins-oracle-pass')
+    //FLYWAY_ORACLE_USER        = credentials('jenkins-oracle-user')
+    //FLYWAY_ORACLE_PASSWORD    = credentials('jenkins-oracle-pass')
   }
 
   stages {
@@ -82,11 +82,6 @@ pipeline {
   post {
     always {
       cleanWs()
-    }
-    failure {
-      mail to: 'raynieradames@gmail.com',
-           subject: "Build failed in ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-           body: "Revisar consola: ${env.BUILD_URL}"
     }
   }
 }
