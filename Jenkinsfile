@@ -20,7 +20,7 @@ pipeline {
     stage('Flyway Validate') {
       steps {
         bat """
-        flyway ${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml validate
+        flyway -configFiles=${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml validate
         """
       }
     }
@@ -28,7 +28,7 @@ pipeline {
     stage('Flyway Migrate') {
       steps {
         bat """
-        flyway ${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml migrate
+        flyway -configFiles=${env.BRANCH_NAME}\\Server\\SQLServer\\Demo-TEXT\\MyDatabase\\flyway.toml migrate
         """
       }
     }
