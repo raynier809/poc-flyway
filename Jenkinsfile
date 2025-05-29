@@ -19,9 +19,8 @@ pipeline {
 
     stage('Flyway Validate') {
       steps {
-        bat """
-        C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        flyway -environment=production -configFiles=.\\flyway.toml validate
+        bat """        
+        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate
         """
       }
     }
@@ -29,8 +28,7 @@ pipeline {
     stage('Flyway Migrate') {
       steps {
         bat """
-        C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        flyway -environment=production -configFiles=.\\flyway.toml migrate
+        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml migrate
         """
       }
     }
@@ -38,8 +36,7 @@ pipeline {
     stage('Flyway Info') {
       steps {
         bat """
-        cd C:\\Demo\\Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        flyway -environment=production info > info-sqlserver.txt
+        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml info > info-sqlserver.txt
         """
         archiveArtifacts artifacts: 'info-*.txt', fingerprint: true
       }
