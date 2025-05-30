@@ -38,9 +38,23 @@ pipeline {
       steps {
         bat """
         cd Server/SQLServer/Demo-TEXT/MyDatabase
-        flyway -environment=production -configFiles=./flyway.toml info > ./info-sqlserver.txt
+        flyway -environment=production -configFiles=./flyway.toml info > ./info-sqlserver_dev.txt
         """
         archiveArtifacts artifacts: 'Server/SQLServer/Demo-TEXT/MyDatabase/info-*.txt', onlyIfSuccessful: true
+      }
+    }
+
+    stage('Flyway validar snapshots') {
+      when { branch 'DEV' }
+      steps {
+        bat """
+        cd Server\\SQLServer\\Demo-TEXT\\MyDatabase
+        if not exist snapshots\\dev-baseline.sql (
+            flyway snapshot -environment=development -configFiles=./flyway.toml -snapshot.filename=snapshots/dev-baseline.sql
+        ) else (
+            echo Snapshot ya existe. No se necesita generar.
+        )
+        """
       }
     }
 
