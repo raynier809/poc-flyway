@@ -31,13 +31,22 @@ placeholderReplacement = true
 oracle.sqlplus         = false
 
 # Validaciones y Enterprise features
-undoEnabled           = true
-validateOnMigrate     = true
-cleanDisabled         = true
-allowMixedMigrations  = false
-driftReport           = true
-driftReportFormat     = "html"
-repairOnValidationError = true
+[check]
+enabled = true
+drift = true
+buildEnvironment = "development"
+deployedSnapshot = "snapshots/data-baseline.sql"
+reportEnabled = true
+reportFilename = "./reports/drift-report.html"
+reportFormat = "html"
+reportOpen = true
+changeReportEnabled = true
+changeReportFilename = "./reports/change-report.html"
+migrationReportEnabled = true
+migrationReportFilename = "./reports/migration-report.html"
+dryRunReportEnabled = true
+dryRunReportFilename = "./reports/dry-run-report.html"
+
 
 # Configuración de transacciones para Oracle
 group                 = false
@@ -47,6 +56,9 @@ mixed                 = false
 outputFile            = "flyway-output.log"
 teamcity              = false
 
+[snapshot]
+filename = "./snapshots/data-baseline.sql"
+
 # -----------------------------------------------------------------------
 # Entornos específicos
 # -----------------------------------------------------------------------
@@ -55,10 +67,14 @@ teamcity              = false
 url       = "jdbc:oracle:thin:@68.233.125.70:1521/main_db"
 user      = "main_db"
 password  = "MainAdmin123"
-schemas   = ["main_db"]
-defaultSchema = "main_db"
+schemas   = ["MAIN_ADMIN"]
+defaultSchema = "MAIN_ADMIN"
 [environments.development.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
+cleanDisabled = false
+[environments.development.snapshot]
+filename = "./snapshots/main-baseline.sql"
+
 
 # Configuración para producción (ajustar según tus datos de producción)
 [environments.production]
@@ -69,3 +85,6 @@ schemas  = ["DEV_SCHEMA"]
 defaultSchema = "DEV_SCHEMA"
 [environments.production.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
+cleanDisabled = false
+[environments.production.snapshot]
+filename = "./snapshots/main-baseline.sql"

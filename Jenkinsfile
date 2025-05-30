@@ -48,11 +48,11 @@ pipeline {
     }
 
     stage('Flyway Drift Report') {
-      when { branch 'ORDEV' }
+      when { branch 'ORQA' }
       steps {
         bat """
         cd Server/Oracle/MyOracleContainer/ORCL
-        flyway -environment=production -configFiles=./flyway.toml drift --outputHtml=drift-sqlserver.html
+        flyway -environment=production -configFiles=./flyway.toml check drift --outputHtml=drift-oracle.html
         """
         publishHTML([
           allowMissing: false,
