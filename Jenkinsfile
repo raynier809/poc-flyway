@@ -18,37 +18,40 @@ pipeline {
     }
 
     stage('Flyway Validate') {
+      when { branch 'ORDEV' }
       steps {
         bat """        
-        flyway -environment=production -configFiles=Server/SQLServer/Demo-TEXT/MyDatabase/flyway.toml validate
+        flyway -environment=production -configFiles=Server/Oracle/MyOracleContainer/ORCL/flyway.toml validate
         """
       }
     }
 
     stage('Flyway Migrate') {
+      when { branch 'ORDEV' }
       steps {
-        bat """
-        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        bat """        
+        cd Server/Oracle/MyOracleContainer/ORCL
         flyway -environment=production -configFiles=./flyway.toml migrate
         """
       }
     }
 
     stage('Flyway Info') {
+      when { branch 'ORDEV' }
       steps {
         bat """
-        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        cd Server/Oracle/MyOracleContainer/ORCL
         flyway -environment=production -configFiles=./flyway.toml info > info-sqlserver.txt
         """
-        archiveArtifacts artifacts: 'Server/SQLServer/Demo-TEXT/MyDatabase/info-*.txt', onlyIfSuccessful: true
+        archiveArtifacts artifacts: 'Server/Oracle/MyOracleContainer/ORCL/info-*.txt', onlyIfSuccessful: true
       }
     }
 
     stage('Flyway Drift Report') {
-      when { branch 'dev|qa' }
+      when { branch 'ORDEV' }
       steps {
         bat """
-        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        cd Server/Oracle/MyOracleContainer/ORCL
         flyway -environment=production -configFiles=./flyway.toml drift --outputHtml=drift-sqlserver.html
         """
         publishHTML([
@@ -63,17 +66,17 @@ pipeline {
     }
 
     stage('Approval Gate') {
-      when { branch 'qa|prod' }
+      when { branch 'ORQA' }
       steps {
         input message: "Approve deployment to ${env.BRANCH_NAME}?", ok: 'Deploy'
       }
     }
 
     stage('Post-Migrate Validation') {
-      when { branch 'qa|prod' }
+      when { branch 'ORQA|ORPRD' }
       steps {
         bat """
-        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        cd Server/Oracle/MyOracleContainer/ORCL
         flyway -environment=production -configFiles=./flyway.toml validate
         """
       }

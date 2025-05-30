@@ -1,44 +1,71 @@
 # -----------------------------------------------------------------------
-# Flyway config para Oracle (Dev environment)
-# Ubicación del archivo:
-# repo-root/dev/Server/Oracle/MyOracleContainer/ORCL/flyway.toml
+# flyway.toml
+# Configuración común a todos los entornos - Oracle Database
 # -----------------------------------------------------------------------
 
-# Conexión JDBC
-# Asumiendo que el contenedor expone ORCL en el puerto 1521
-flyway.url = "jdbc:oracle:thin:@//oracle-dev:1521/ORCL"
-
-# Credenciales en Jenkins Credentials
-flyway.user = "${FLYWAY_ORACLE_USER}"
-flyway.password = "${FLYWAY_ORACLE_PASSWORD}"
-
-# Ubicaciones de los scripts
-flyway.locations = [
-  "filesystem:tables",
-  "filesystem:views",
-  "filesystem:procedures",
-  "filesystem:functions"
+locations = [
+  "filesystem:./tables",
+  "filesystem:./views", 
+  "filesystem:./procedures",
+  "filesystem:./functions"
 ]
 
-# Prefijos y sufijos
-flyway.sqlMigrationPrefix = "V"
-flyway.undoSqlMigrationPrefix = "U"
-flyway.sqlMigrationSeparator = "__"
-flyway.sqlMigrationSuffixes = [".sql"]
+# Conexión y credenciales Oracle (genéricas; se pueden sobreescribir en entornos)
+url                   = "jdbc:oracle:thin:@68.233.125.70/dev_db"
+user                  = "${FLYWAY_ORACLE_USER}"
+password              = "${FLYWAY_ORACLE_PASSWORD}"
+driver                = "oracle.jdbc.OracleDriver"
+schemas               = ["DEV_ADMIN"]
+defaultSchema         = "DEV_ADMIN"
 
-# Esquema de trabajo
-# Si usas un esquema específico (por ejemplo, APP_SCHEMA), especifícalo:
-flyway.schemas = ["APP_SCHEMA"]
+# Convenciones de nombres
+sqlMigrationPrefix      = "V"
+undoSqlMigrationPrefix = "U"
+sqlMigrationSeparator   = "__"
+sqlMigrationSuffixes    = [".sql"]
 
-# Enterprise features
-flyway.driftReport = true
-flyway.driftReportFormat = "html"
-flyway.undoEnabled = true
-flyway.validateOnMigrate = true
-flyway.cleanDisabled = true
-flyway.allowMixedMigrations = false
-flyway.repairOnValidationError = true
+# Configuraciones específicas para Oracle
+placeholderReplacement = true
 
-# Archivo de salida de logs (para archivar en Jenkins)
-flyway.outputFile = "flyway-output.log"
-flyway.oracle.sqlplus = false
+# Oracle-specific settings
+oracle.sqlplus         = false
+
+# Validaciones y Enterprise features
+undoEnabled           = true
+validateOnMigrate     = true
+cleanDisabled         = true
+allowMixedMigrations  = false
+driftReport           = true
+driftReportFormat     = "html"
+repairOnValidationError = true
+
+# Configuración de transacciones para Oracle
+group                 = false
+mixed                 = false
+
+# Salida de logs
+outputFile            = "flyway-output.log"
+teamcity              = false
+
+# -----------------------------------------------------------------------
+# Entornos específicos
+# -----------------------------------------------------------------------
+
+[environments.development]
+url       = "jdbc:oracle:thin:@68.233.125.70:1521/main_db"
+user      = "main_db"
+password  = "MainAdmin123"
+schemas   = ["main_db"]
+defaultSchema = "main_db"
+[environments.development.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
+
+# Configuración para producción (ajustar según tus datos de producción)
+[environments.production]
+url      = "jdbc:oracle:thin:@68.233.125.70:1521/dev_db"
+user     = "dev_admin"
+password = "DevAdmin123"
+schemas  = ["DEV_SCHEMA"]
+defaultSchema = "DEV_SCHEMA"
+[environments.production.flyway]
+locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
