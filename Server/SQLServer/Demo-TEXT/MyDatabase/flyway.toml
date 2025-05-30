@@ -38,6 +38,7 @@ outputFile            = "flyway-output.log"
 teamcity              = false
 
 [check]
+changes = true
 enabled = true
 drift = true
 buildEnvironment = "development"

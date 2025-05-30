@@ -48,8 +48,8 @@ pipeline {
       when { branch 'DEV' }
       steps {
         bat """
-        cd Server\\SQLServer\\Demo-TEXT\\MyDatabase
-        if not exist snapshots\\dev-baseline.sql (
+        cd Server/SQLServer/Demo-TEXT/MyDatabase
+        if not exist snapshots/dev-baseline.sql (
             flyway snapshot -environment=development -configFiles=./flyway.toml -snapshot.filename=snapshots/dev-baseline.sql
         ) else (
             echo Snapshot ya existe. No se necesita generar.
@@ -84,7 +84,7 @@ pipeline {
               mimeType: 'text/html',
               attachLog: false,
               attachmentsPattern: "${reportDir}/*.html",
-              to: 'raynieradames@gmail.com' // Cambia esto por el destinatario real
+              to: 'carlos.adames@babelgroup.com' // Cambia esto por el destinatario real
             )
 
             // Borrar los archivos HTML después de enviar

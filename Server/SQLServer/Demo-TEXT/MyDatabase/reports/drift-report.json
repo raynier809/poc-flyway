@@ -9,5 +9,21 @@
     "differences" : [ ],
     "database" : "MAIN_db",
     "driftDetected" : false
+  }, {
+    "timestamp" : "2025-05-30T07:19:40.5672041",
+    "operation" : "drift",
+    "exception" : null,
+    "licenseFailed" : false,
+    "onlyInSource" : [ ],
+    "onlyInTarget" : [ {
+      "objectType" : "Table",
+      "name" : "test",
+      "schema" : "dbo",
+      "definitionBefore" : null,
+      "definitionAfter" : "CREATE TABLE [dbo].[test]\r\n(\r\n[ID] [int] NULL,\r\n[nombre] [varchar] (50) NULL\r\n)\r\nGO\r\n"
+    } ],
+    "differences" : [ ],
+    "database" : "MAIN_db",
+    "driftDetected" : true
   } ]
 }
