@@ -1,21 +1,17 @@
 {
   "individualResults" : [ {
-    "timestamp" : "2025-05-30T05:52:23.4982872",
-    "operation" : "drift",
-    "exception" : null,
-    "licenseFailed" : false,
-    "onlyInSource" : [ ],
-    "onlyInTarget" : [ ],
-    "differences" : [ ],
-    "database" : "MAIN_db",
-    "driftDetected" : false
-  }, {
-    "timestamp" : "2025-05-30T07:19:40.5672041",
+    "timestamp" : "2025-05-30T14:22:27.854512",
     "operation" : "drift",
     "exception" : null,
     "licenseFailed" : false,
     "onlyInSource" : [ ],
     "onlyInTarget" : [ {
+      "objectType" : "Table",
+      "name" : "Users",
+      "schema" : "dbo",
+      "definitionBefore" : null,
+      "definitionAfter" : "CREATE TABLE [dbo].[Users]\r\n(\r\n[Id] [int] NOT NULL IDENTITY(1, 1),\r\n[Username] [nvarchar] (100) NOT NULL,\r\n[Email] [nvarchar] (100) NOT NULL,\r\n[IsActive] [bit] NULL CONSTRAINT [DF__Users__IsActive__5DCAEF64] DEFAULT ((1)),\r\n[CreatedAt] [datetime] NULL CONSTRAINT [DF__Users__CreatedAt__5EBF139D] DEFAULT (getdate())\r\n)\r\nGO\r\nALTER TABLE [dbo].[Users] ADD CONSTRAINT [PK__Users__3214EC0731F4FB4A] PRIMARY KEY CLUSTERED ([Id])\r\nGO\r\n"
+    }, {
       "objectType" : "Table",
       "name" : "test",
       "schema" : "dbo",
