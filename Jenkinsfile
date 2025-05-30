@@ -38,27 +38,47 @@ pipeline {
       steps {
         bat """
         cd Server/SQLServer/Demo-TEXT/MyDatabase
-        flyway -environment=production -configFiles=./flyway.toml info > info-sqlserver.txt
+        flyway -environment=production -configFiles=./flyway.toml info > ./info-sqlserver.txt
         """
         archiveArtifacts artifacts: 'Server/SQLServer/Demo-TEXT/MyDatabase/info-*.txt', onlyIfSuccessful: true
       }
     }
 
     stage('Flyway Drift Report') {
-      when { branch 'dev|qa' }
+      when { branch 'DEV' }
       steps {
         bat """
         cd Server/SQLServer/Demo-TEXT/MyDatabase
-        flyway -environment=production -configFiles=./flyway.toml drift --outputHtml=drift-sqlserver.html
+        flyway check -drift -environment=production -check.deployedSnapshot=snapshots/dev-baseline.sql -reportFilename=reports/drift-report.html
         """
-        publishHTML([
-          allowMissing: false,
-          alwaysLinkToLastBuild: true,
-          keepAll: true,
-          reportDir: '.',
-          reportFiles: 'drift-*.html',
-          reportName: "Drift Report (${env.BRANCH_NAME})"
-        ])
+             }
+    }
+
+    stage('Enviar email Drift Report') {
+      when { branch 'DEV' }
+      steps {
+        script {
+          def reportDir = 'Server/SQLServer/Demo-TEXT/MyDatabase/reports'
+          def htmlFiles = bat(script: "dir /b \"${reportDir}\\*.html\"", returnStdout: true).trim()
+
+          if (htmlFiles) {
+            echo "Se encontraron archivos HTML. Enviando correo..."
+
+            emailext (
+              subject: "Flyway Drift Report - ${env.BRANCH_NAME}",
+              body: """<p>Se adjunta el reporte de Drift generado por Flyway en el entorno <b>${env.BRANCH_NAME}</b>.</p>""",
+              mimeType: 'text/html',
+              attachLog: false,
+              attachmentsPattern: "${reportDir}/*.html",
+              to: 'raynieradames@gmail.com' // Cambia esto por el destinatario real
+            )
+
+            // Borrar los archivos HTML después de enviar
+            bat "del /q \"${reportDir}\\*.html\""
+          } else {
+            echo "No se encontraron archivos HTML. No se enviará ningún correo."
+          }
+        }
       }
     }
 

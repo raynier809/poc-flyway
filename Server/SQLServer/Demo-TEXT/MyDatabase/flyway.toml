@@ -31,12 +31,27 @@ validateOnMigrate     = true
 cleanDisabled         = true
 allowMixedMigrations  = false
 driftReport           = true
-driftReportFormat     = "html"
 repairOnValidationError = true
 
 # Salida de logs
 outputFile            = "flyway-output.log"
 teamcity              = false
+
+[check]
+enabled = true
+drift = true
+buildEnvironment = "development"
+deployedSnapshot = "./snapshots/main-baseline.sql"
+reportEnabled = true
+reportFilename = "./reports/drift-report.html"
+reportFormat = "html"
+reportOpen = true
+changeReportEnabled = true
+changeReportFilename = "./reports/change-report.html"
+migrationReportEnabled = true
+migrationReportFilename = "./reports/migration-report.html"
+dryRunReportEnabled = true
+dryRunReportFilename = "./reports/dry-run-report.html"
 
 # -----------------------------------------------------------------------
 # Entornos específicos
@@ -49,11 +64,33 @@ password  = "Dev123456789!"
 schemas   = ["dbo"]
 [environments.development.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures", "filesystem:./functions"]
+cleanDisabled = false
+[environments.development.snapshot]
+filename = "./snapshots/main-baseline.sql"
 
+
+ 
 
 [environments.production]
 url      = "jdbc:sqlserver://DEMO-FLYWAY:1433;databaseName=DEV_db;integratedSecurity=true;encrypt=true;trustServerCertificate=true"
 schemas  = ["dbo"]
 [environments.production.flyway]
 locations = ["filesystem:./tables", "filesystem:./views", "filesystem:./procedures","filesystem:./functions"]
-
+cleanDisabled = false
+[environments.production.snapshot]
+filename = "./snapshots/dev-baseline.sql"
+[environments.development.check]
+enabled = true
+drift = true
+buildEnvironment = "production"
+deployedSnapshot = "./snapshots/dev-baseline.sql"
+reportEnabled = true
+reportFilename = "./reports/drift-report-dev.html"
+reportFormat = "html"
+reportOpen = true
+changeReportEnabled = true
+changeReportFilename = "./reports/change-report-dev.html"
+migrationReportEnabled = true
+migrationReportFilename = "./reports/migration-report-dev.html"
+dryRunReportEnabled = true
+dryRunReportFilename = "./reports/dry-run-report-dev.html"

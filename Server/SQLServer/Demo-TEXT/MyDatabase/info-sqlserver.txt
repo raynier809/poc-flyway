@@ -1,0 +1,17 @@
+Flyway Enterprise Edition 11.8.3 by Redgate
+Licensed until 2025-06-23 (23 days remaining)
+WARNING: You are using a limited Flyway trial license, valid until 2025-06-23. In 23 days you must either upgrade to a full Enterprise license or downgrade to Community.
+
+See release notes here: https://rd.gt/416ObMi
+Database: jdbc:sqlserver://DEMO-FLYWAY:1433;connectRetryInterval=10;connectRetryCount=1;maxResultBuffer=-1;sendTemporalDataTypesAsStringForBulkCopy=true;delayLoadingLobs=true;useFmtOnly=false;useBulkCopyForBatchInsert=false;cancelQueryTimeout=-1;sslProtocol=TLS;calcBigDecimalPrecision=false;useDefaultJaasConfig=false;jaasConfigurationName=SQLJDBCDriver;statementPoolingCacheSize=0;serverPreparedStatementDiscardThreshold=10;enablePrepareOnFirstPreparedStatementCall=false;fips=false;socketTimeout=0;authentication=NotSpecified;authenticationScheme=nativeAuthentication;xopenStates=false;datetimeParameterType=datetime2;sendTimeAsDatetime=true;replication=false;trustStoreType=JKS;trustServerCertificate=true;TransparentNetworkIPResolution=true;iPAddressPreference=IPv4First;serverNameAsACE=false;sendStringParametersAsUnicode=true;selectMethod=direct;responseBuffering=adaptive;queryTimeout=-1;packetSize=8000;multiSubnetFailover=false;loginTimeout=30;lockTimeout=-1;lastUpdateCount=true;useFlexibleCallableStatements=true;useDefaultGSSCredential=false;prepareMethod=prepexec;encrypt=true;disableStatementPooling=true;databaseName=DEV_db;columnEncryptionSetting=Disabled;applicationName=Microsoft JDBC Driver for SQL Server;applicationIntent=readwrite; (Microsoft SQL Server 16.0)
+Schema version: 3
+
++-----------+---------+-----------------------+----------+---------------------+----------+----------+
+| Category  | Version | Description           | Type     | Installed On        | State    | Undoable |
++-----------+---------+-----------------------+----------+---------------------+----------+----------+
+|           | 0       | << Flyway Baseline >> | BASELINE | 2025-05-28 02:42:53 | Baseline | No       |
+| Versioned | 1       | create products       | SQL      | 2025-05-28 19:35:28 | Success  | Yes      |
+| Versioned | 2       | create customers      | SQL      | 2025-05-28 19:35:28 | Success  | No       |
+| Versioned | 3       | create orders         | SQL      | 2025-05-29 02:16:51 | Success  | No       |
++-----------+---------+-----------------------+----------+---------------------+----------+----------+
+

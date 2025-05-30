@@ -1,0 +1,13 @@
+{
+  "individualResults" : [ {
+    "timestamp" : "2025-05-30T05:52:23.4982872",
+    "operation" : "drift",
+    "exception" : null,
+    "licenseFailed" : false,
+    "onlyInSource" : [ ],
+    "onlyInTarget" : [ ],
+    "differences" : [ ],
+    "database" : "MAIN_db",
+    "driftDetected" : false
+  } ]
+}
