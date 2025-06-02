@@ -1,6 +1,0 @@
-CREATE TABLE dbo.Users (
-    Id INT PRIMARY KEY IDENTITY,
-    Username NVARCHAR(100) NOT NULL,
-    Email NVARCHAR(100) NOT NULL,
-    IsActive BIT DEFAULT 1
-);
