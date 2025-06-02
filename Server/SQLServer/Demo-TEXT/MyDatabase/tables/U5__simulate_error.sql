@@ -1,0 +1,1 @@
+ALTER TABLE dbo.Users DROP COLUMN CreatedAt;

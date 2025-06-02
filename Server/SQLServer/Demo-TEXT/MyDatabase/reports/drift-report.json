@@ -1,0 +1,19 @@
+{
+  "individualResults" : [ {
+    "timestamp" : "2025-06-02T19:20:09.0472698",
+    "operation" : "drift",
+    "exception" : null,
+    "licenseFailed" : false,
+    "onlyInSource" : [ ],
+    "onlyInTarget" : [ ],
+    "differences" : [ {
+      "objectType" : "Table",
+      "name" : "Users",
+      "schema" : "dbo",
+      "definitionBefore" : "CREATE TABLE [dbo].[Users]\r\n(\r\n[Id] [int] NOT NULL IDENTITY(1, 1),\r\n[Username] [nvarchar] (100) NOT NULL,\r\n[Email] [nvarchar] (100) NOT NULL,\r\n[IsActive] [bit] NULL CONSTRAINT [DF__Users__IsActive__6EF57B66] DEFAULT ((1))\r\n)\r\nGO\r\nALTER TABLE [dbo].[Users] ADD CONSTRAINT [PK__Users__3214EC07AF6E5C53] PRIMARY KEY CLUSTERED ([Id])\r\nGO\r\n",
+      "definitionAfter" : "CREATE TABLE [dbo].[Users]\r\n(\r\n[Id] [int] NOT NULL IDENTITY(1, 1),\r\n[Username] [nvarchar] (100) NOT NULL,\r\n[Email] [nvarchar] (100) NOT NULL,\r\n[IsActive] [bit] NULL CONSTRAINT [DF__Users__IsActive__6EF57B66] DEFAULT ((1)),\r\n[CreatedAt] [datetime] NULL CONSTRAINT [DF__Users__CreatedAt__6FE99F9F] DEFAULT (getdate())\r\n)\r\nGO\r\nALTER TABLE [dbo].[Users] ADD CONSTRAINT [PK__Users__3214EC07AF6E5C53] PRIMARY KEY CLUSTERED ([Id])\r\nGO\r\n"
+    } ],
+    "database" : "MAIN_db",
+    "driftDetected" : true
+  } ]
+}
